@@ -6,6 +6,7 @@ class Forms extends React.Component {
 
     this.toUpperCase = this.toUpperCase.bind(this);
     this.checkFirstLetter = this.checkFirstLetter.bind(this);
+    this.warningAlert = this.warningAlert.bind(this);
 
     this.state = {
       validated: true,
@@ -21,6 +22,10 @@ class Forms extends React.Component {
     if (Number(firstLetter) || firstLetter === '0') {
       target.value = '';
     }
+  }
+
+  warningAlert() {
+    alert('Preencha com cuidado esta informação.');
   }
 
   render() {
@@ -66,6 +71,14 @@ class Forms extends React.Component {
           <input type="radio" name="type" />
           <label>Apartamento</label>
           <input type="radio" name="type" checked/>
+        </fieldset>
+        <fieldset>
+          <label>resumo do currículo</label>
+          <textarea maxlength="1000" required></textarea>
+          <label>Cargo</label>
+          <textarea onMouseOver={this.warningAlert} maxlength="40" required></textarea>
+          <label>Descrição do cargo</label>
+          <textarea maxlength="500" required></textarea>
         </fieldset>
       </section>
     );
