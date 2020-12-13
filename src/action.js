@@ -1,8 +1,17 @@
-const FORM_DATA = 'FORM_DATA';
+const INFO_DATA = 'INFO_DATA';
+const WARNING_ALERT = 'WARNING_ALERT';
 
-const sendForm = (formData) => ({
-  type: FORM_DATA,
-  formData,
+const sendInfo = (info) => ({
+  type: INFO_DATA,
+  info,
 })
 
-export default sendForm;
+const warningAlert = () => {
+  alert('Preencha com cuidado esta informação.');
+  return {
+    type: WARNING_ALERT,
+    showAlert: false,
+  }
+}
+
+export { sendInfo, warningAlert };

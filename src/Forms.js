@@ -1,88 +1,89 @@
 import React from 'react';
+import PersonalInfo from './components/PersonalInfo';
+import JobInfo from './components/JobInfo';
+import { connect } from 'react-redux';
 
 class Forms extends React.Component {
-  constructor(props){
-    super(props);
-
-    this.toUpperCase = this.toUpperCase.bind(this);
-    this.checkFirstLetter = this.checkFirstLetter.bind(this);
-    this.warningAlert = this.warningAlert.bind(this);
+  constructor() {
+    super();
 
     this.state = {
+      validated: false,
+    }
+  }
+
+  validateData = (e) => {
+    e.preventDefault();
+    const { info } = this.props;
+    const keys = Object.keys(info);
+    for (let key of keys) {
+      if (info[key] === '') {
+        this.setState({
+          validated: false,
+        });
+        return;
+      }
+    }
+    this.setState({
       validated: true,
+    });
+  }
+
+  renderDataDiv = () => {
+    const { info } = this.props;
+    const { validated } = this.state;
+    if (validated) {
+      return (
+        <div>
+          <h2>Informações:</h2>
+          <p>Nome: {`${info.name}`}</p>
+          <p>Email: {`${info.email}`}</p>
+          <p>CPF: {`${info.cpf}`}</p>
+          <p>Endereço: {`${info.adress}`}</p>
+          <p>Cidade: {`${info.city}`}</p>
+          <p>Estado: {`${info.state}`}</p>
+          <p>Tipo de Residencia: {`${info.residence}`}</p>
+          <p>Resumo do currículo: {`${info.curriculum}`}</p>
+          <p>Cargo: {`${info.jobRole}`}</p>
+          <p>Descrição do cargo: {`${info.jobDescription}`}</p>
+        </div>
+      );
     }
+    return 'Por Favor, preencha todos os campos.';
   }
 
-  toUpperCase({target}) {
-    target.value = target.value.toUpperCase();
-  }
+  cleanFields = () => {
+    this.setState({
+      validated: false,
+    })
 
-  checkFirstLetter({ target }) {
-    const firstLetter = target.value[0];
-    if (Number(firstLetter) || firstLetter === '0') {
-      target.value = '';
+    const dataInput = document.getElementsByTagName('input');
+    const dataTextArea = document.getElementsByTagName('textarea');
+    for(let input of dataInput) {
+      input.value = '';
     }
-  }
-
-  warningAlert() {
-    alert('Preencha com cuidado esta informação.');
+    for(let textArea of dataTextArea) {
+      textArea.value = '';
+    }
   }
 
   render() {
     return (
-      <section>
-        <fieldset>
-          <label htmlFor="input-name">Nome</label>
-          <input
-            id="input-name"
-            maxlength="40"
-            onChange={this.toUpperCase}
-            required
-          />
-          <label htmlFor="input-email">Email</label>
-          <input
-            id="input-email"
-            maxlength="50"
-            required
-          />
-          <label htmlFor="input-cpf">CPF</label>
-          <input
-            id="input-cpf"
-            maxlength="11"
-            required
-          />
-          <label htmlFor="input-adress">Endereço</label>
-          <input
-            id="input-adress"
-            maxlength="200"
-            required
-          />
-          <label htmlFor="input-city">Cidade</label>
-          <input
-            id="input-city"
-            maxlength="28"
-            onBlur={this.checkFirstLetter}
-            required
-          />
-          <select>
-
-          </select>
-          <label>Casa</label>
-          <input type="radio" name="type" />
-          <label>Apartamento</label>
-          <input type="radio" name="type" checked/>
-        </fieldset>
-        <fieldset>
-          <label>resumo do currículo</label>
-          <textarea maxlength="1000" required></textarea>
-          <label>Cargo</label>
-          <textarea onMouseOver={this.warningAlert} maxlength="40" required></textarea>
-          <label>Descrição do cargo</label>
-          <textarea maxlength="500" required></textarea>
-        </fieldset>
-      </section>
+      <div>
+        <form>
+          <PersonalInfo />
+          <JobInfo />
+          <button onClick={this.validateData} type="submit">Submit</button>
+        </form>
+        <button onClick={this.cleanFields}>Limpar</button>
+        {this.renderDataDiv()}
+      </div>
     );
   }
-}
+};
 
-export default Forms;
+const mapStateToProps = state => ({
+  info: state.infoReducer.info,
+});
+
+export default connect(mapStateToProps)(Forms);
